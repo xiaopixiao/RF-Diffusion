@@ -271,13 +271,12 @@ def main(args):
         fid_pred_dir = params.fid_pred_dir
     if args.cond_dir is not None:
         params.cond_dir = args.cond_dir
-    device = torch.device(
-        'cpu') if args.device == 'cpu' else torch.device('cuda')
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     # Lazy load model.
     if os.path.exists(f'{model_dir}/weights.pt'):
-        checkpoint = torch.load(f'{model_dir}/weights.pt')
+        checkpoint = torch.load(f'{model_dir}/weights.pt', map_location=torch.device('cpu'))
     else:
-        checkpoint = torch.load(model_dir)
+        checkpoint = torch.load(model_dir, map_location=torch.device('cpu'))
     if args.task_id==0:
         model = tfdiff_WiFi(AttrDict(params)).to(device)
     elif args.task_id==1:
